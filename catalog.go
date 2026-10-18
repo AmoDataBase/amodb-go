@@ -63,7 +63,8 @@ func (s *CollectionsService) Details(ctx context.Context, id int, params Params)
 // CompaniesService groups the company endpoints. Use it as client.Companies.
 type CompaniesService service
 
-// Details returns a production company.
+// Details returns a production company. The description is always empty and
+// parent_company is always null.
 func (s *CompaniesService) Details(ctx context.Context, id int, params Params) (Object, error) {
 	return getObject(ctx, s.client, buildPath("company", id), params)
 }

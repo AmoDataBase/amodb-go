@@ -78,9 +78,17 @@ for _, member := range movie.Credits.Cast {
 }
 ```
 
-Sections without a typed field, such as `Images`, are `amodb.Object` values. TV works the same way: `client.TV.Details(ctx, 1399, nil)`, `client.TV.Season(ctx, 1399, 1, nil)` and `client.TV.Episode(ctx, 1399, 1, 2, nil)`.
+The API reads up to 20 names and ignores unknown names without an error.
 
-Endpoints with a stable shape return structs such as `MovieDetails`, `TVDetails`, `Person` and `Paged[Movie]`. The others return `amodb.Object`, which is `map[string]any`. `client.Do` is the escape hatch for any path:
+- Movies: `credits`, `images`, `videos`, `keywords`, `translations`, `external_ids`, `similar`, `recommendations`, `reviews`, `release_dates`, `watch/providers`, `alternative_titles`, `lists`, `moods`, `soundtracks`, `ratings`, `wikidata`, `showtimes`.
+- TV shows: the same names, with `content_ratings` and `episode_groups` in place of `release_dates`.
+- People: `combined_credits`, `movie_credits`, `tv_credits`, `external_ids`, `images`.
+
+Sections without a typed field, such as `Images`, are `amodb.Object` values. The appended `moods`, `ratings` and `soundtracks` sections have no `id` key, so their `ID` field is 0. TV works the same way: `client.TV.Details(ctx, 1399, nil)`, `client.TV.Season(ctx, 1399, 1, nil)` and `client.TV.Episode(ctx, 1399, 1, 2, nil)`.
+
+Other calls in the same style: `client.Movies.Latest(ctx, nil)`, `client.TV.Latest(ctx, nil)`, `client.Movies.Lists(ctx, 550, nil)` and `client.TV.EpisodeGroups(ctx, 1399, nil)`. List endpoints take `page` from 1 to 500.
+
+Endpoints with a stable shape return structs such as `MovieDetails`, `TVDetails`, `Person`, `Moods` and `Paged[Movie]`. The others return `amodb.Object`, which is `map[string]any`. `client.Do` is the escape hatch for any path:
 
 ```go
 var out map[string]any
@@ -129,19 +137,115 @@ res, err := client.Find(ctx, "tt0137523", "imdb_id")
 if err != nil {
 	log.Fatal(err)
 }
-fmt.Println(res.MovieResults[0].Title)
+fmt.Println(res.MovieResults[0].Title) // Fight Club
+
+res, err = client.Find(ctx, "361", "kinopoisk_id")
+res, err = client.Find(ctx, "Q35332", "wikidata_id")
+fmt.Println(res.PersonResults[0].Name) // Brad Pitt
 ```
 
-The source is `imdb_id` for IMDb ids. The API reference at https://amodb.dev lists the other accepted sources.
+These sources return results: `imdb_id` (`tt...` for titles, `nm...` for people), `tvdb_id`, `facebook_id`, `twitter_id`, `instagram_id`, `wikidata_id` and `kinopoisk_id`. `freebase_mid`, `freebase_id`, `tvrage_id`, `tiktok_id` and `youtube_id` are accepted and return empty lists. A missing or unknown source returns an HTTP 400 error with `StatusCode` 22.
+
+`FindResults` has `MovieResults`, `PersonResults`, `TVResults`, `TVEpisodeResults` and `TVSeasonResults`. The last two are always empty. Every item has a `MediaType`.
 
 ## Extras
 
-These amodb endpoints work for movies and TV: `Moods`, `Soundtracks`, `Ratings` and `Wikidata`. `Movies.Showtimes` takes a country code. They also work in `append_to_response`.
+`Moods`, `Soundtracks`, `Ratings`, `Wikidata` and `Showtimes` exist on both `client.Movies` and `client.TV`. Each returns a typed struct.
+
+### Moods
+
+```go
+moods, err := client.Movies.Moods(ctx, 155, nil)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(moods.Source) // measured
+for _, m := range moods.Results {
+	fmt.Println(m.Name, m.Avg) // action 3.9
+}
+```
+
+`Source` is `amodb.MoodSourceMeasured` for viewer data, `amodb.MoodSourceEstimated` when the meters come from genres (whole numbers), or empty with no `Results` when the title has no data. `Avg` and `Values` (up to 24 readings) are on a 0 to 10 scale. The names are action, fear, humor, pace, profanity, romance, sadness, sex and violence. A title may have fewer than nine.
+
+### Soundtracks
+
+```go
+sd, err := client.Movies.Soundtracks(ctx, 155, nil)
+if err != nil {
+	log.Fatal(err)
+}
+for _, album := range sd.Results {
+	fmt.Println(album.Album, album.TrackCount, "tracks") // The Dark Knight 14 tracks
+	for _, track := range album.Tracks {
+		fmt.Println(track.Number, track.Title, track.DurationMS)
+	}
+}
+```
+
+`Results` is empty when no album is known. An album has `Source` (`musicbrainz` or `deezer`), `Album`, `Artist`, `Released`, `URL`, `TrackCount` and `Tracks`. `Artist`, `Released` and `URL` are empty when unknown.
+
+### Ratings
 
 ```go
 ratings, err := client.Movies.Ratings(ctx, 550, nil)
-showtimes, err := client.Movies.Showtimes(ctx, 550, "US", nil)
+if err != nil {
+	log.Fatal(err)
+}
+if r := ratings.IMDb; r != nil && r.Votes != nil {
+	fmt.Println(r.Value, "from", *r.Votes, "votes") // 8.8 from 2669989 votes
+}
 ```
+
+The providers are `IMDb`, `Kinopoisk`, `Metacritic`, `RottenTomatoes` and `TMDB`. Each is a `*amodb.Rating` with `Value` and `Votes`. A provider without a score is `nil`, and `Votes` is `nil` when the count is unknown. IMDb, Kinopoisk and TMDB are out of 10, Metacritic and RottenTomatoes out of 100.
+
+### Wikidata
+
+```go
+wd, err := client.Movies.Wikidata(ctx, 604, nil)
+if err != nil {
+	log.Fatal(err)
+}
+if wd.Budget != nil {
+	fmt.Println(wd.Budget.Value, wd.Budget.Currency) // 150000000 USD
+}
+if wd.Follows != nil {
+	fmt.Println(wd.Follows.Label, wd.Follows.TMDBID) // The Matrix 603
+}
+```
+
+`Budget` and `BoxOffice` hold `Value` and `Currency` (`BoxOffice` adds `Worldwide`) and are `nil` when unknown. `Follows` and `FollowedBy` are `*amodb.WikidataLink` or `nil`. `Sitelinks` maps a language code to a Wikipedia page title. `Awards`, `Nominations`, `BasedOn`, `FilmingLocations`, `NarrativeLocations` and `OriginalBroadcasters` are slices. A link has `WikidataID` and `Label`, plus `TMDBID` and `MediaType` when the item is a title in the catalog.
+
+### Showtimes
+
+```go
+// Which countries have showtimes
+all, err := client.Movies.Showtimes(ctx, 550, "", nil)
+if err != nil {
+	log.Fatal(err)
+}
+for _, country := range all.Countries {
+	fmt.Println(country.Country, country.Venues, country.Showtimes)
+}
+
+// Venues and showtimes for one country
+ru, err := client.Movies.Showtimes(ctx, 550, "RU", nil)
+if err != nil {
+	log.Fatal(err)
+}
+for _, venue := range ru.Results {
+	for _, show := range venue.Showtimes {
+		fmt.Println(venue.Name, show.Start)
+	}
+}
+```
+
+The country is optional. An empty string sends no country: `Results` is empty and `Countries` holds the counts per country (`Venues`, `Cities`, `Showtimes`, `FirstDay`, `LastDay`). With a country code, `Results` lists the venues and each venue has a `Showtimes` slice. `Start` is the local time at the venue. Only days from today on are listed. To get the venues inside `append_to_response`, pass `"country"` in `Params`.
+
+## Calls that are not offered
+
+These TMDB paths answer 404 with `status_code` 34, so the client has no method for them: `aggregate_credits`, `changes`, `person/{id}/translations`, `person/{id}/tagged_images`, `credit/{id}`, `review/{id}`, `tv/episode_group/{id}`, images, translations and alternative names of collections, companies and networks, and `configuration/timezones`. Everything under `account`, `authentication`, `guest_session` and `list` answers 405 with `status_code` 37, and so does any `rating` or `account_states` path.
+
+Some served calls return little: `Reviews` is empty for most titles, and season and episode videos and translations are empty. The `include_adult` parameter is ignored, because adult titles and people are never served.
 
 ## Error handling
 

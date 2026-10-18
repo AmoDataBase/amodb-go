@@ -44,6 +44,38 @@ func ExampleMoviesService_Details() {
 	}
 }
 
+func ExampleMoviesService_Ratings() {
+	client, err := amodb.NewClient(os.Getenv("AMODB_API_KEY"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ratings, err := client.Movies.Ratings(context.Background(), 550, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if imdb := ratings.IMDb; imdb != nil && imdb.Votes != nil {
+		fmt.Println(imdb.Value, *imdb.Votes)
+	}
+}
+
+func ExampleMoviesService_Showtimes() {
+	client, err := amodb.NewClient(os.Getenv("AMODB_API_KEY"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	showtimes, err := client.Movies.Showtimes(context.Background(), 550, "RU", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, venue := range showtimes.Results {
+		for _, show := range venue.Showtimes {
+			fmt.Println(venue.Name, show.Start)
+		}
+	}
+}
+
 func ExampleSearchService_Movie() {
 	client, err := amodb.NewClient(os.Getenv("AMODB_API_KEY"))
 	if err != nil {

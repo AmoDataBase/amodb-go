@@ -70,11 +70,13 @@ type Movie struct {
 	VoteCount        int     `json:"vote_count,omitempty"`
 	Adult            bool    `json:"adult,omitempty"`
 	Video            bool    `json:"video,omitempty"`
+	MediaType        string  `json:"media_type,omitempty"`
 }
 
-// MovieDetails is the answer of Movies.Details. The sections that
-// append_to_response adds are decoded into the fields at the end. A section
-// without a field here can be read with Client.Do into your own struct.
+// MovieDetails is the answer of Movies.Details and Movies.Latest. The
+// sections that append_to_response adds are decoded into the fields at the
+// end. A section without a field here can be read with Client.Do into your
+// own struct.
 type MovieDetails struct {
 	ID                  int              `json:"id"`
 	Title               string           `json:"title"`
@@ -96,6 +98,7 @@ type MovieDetails struct {
 	VoteCount           int              `json:"vote_count,omitempty"`
 	Adult               bool             `json:"adult,omitempty"`
 	Video               bool             `json:"video,omitempty"`
+	OriginCountry       []string         `json:"origin_country,omitempty"`
 	Genres              []Genre          `json:"genres,omitempty"`
 	ProductionCompanies []Company        `json:"production_companies,omitempty"`
 	ProductionCountries []Country        `json:"production_countries,omitempty"`
@@ -104,20 +107,21 @@ type MovieDetails struct {
 	Credits             *Credits         `json:"credits,omitempty"`
 	Recommendations     *Paged[Movie]    `json:"recommendations,omitempty"`
 	Similar             *Paged[Movie]    `json:"similar,omitempty"`
+	Lists               *Paged[UserList] `json:"lists,omitempty"`
 	Images              Object           `json:"images,omitempty"`
 	Videos              Object           `json:"videos,omitempty"`
 	Keywords            Object           `json:"keywords,omitempty"`
-	ExternalIDs         Object           `json:"external_ids,omitempty"`
+	ExternalIDs         *ExternalIDs     `json:"external_ids,omitempty"`
 	ReleaseDates        Object           `json:"release_dates,omitempty"`
 	Reviews             Object           `json:"reviews,omitempty"`
 	Translations        Object           `json:"translations,omitempty"`
 	AlternativeTitles   Object           `json:"alternative_titles,omitempty"`
 	WatchProviders      Object           `json:"watch/providers,omitempty"`
-	Moods               Object           `json:"moods,omitempty"`
-	Soundtracks         Object           `json:"soundtracks,omitempty"`
-	Ratings             Object           `json:"ratings,omitempty"`
-	Wikidata            Object           `json:"wikidata,omitempty"`
-	Showtimes           Object           `json:"showtimes,omitempty"`
+	Moods               *Moods           `json:"moods,omitempty"`
+	Soundtracks         *Soundtracks     `json:"soundtracks,omitempty"`
+	Ratings             *Ratings         `json:"ratings,omitempty"`
+	Wikidata            *Wikidata        `json:"wikidata,omitempty"`
+	Showtimes           *Showtimes       `json:"showtimes,omitempty"`
 }
 
 // TVShow is the short TV form used in lists and search results.
@@ -136,9 +140,11 @@ type TVShow struct {
 	VoteAverage      float64  `json:"vote_average,omitempty"`
 	VoteCount        int      `json:"vote_count,omitempty"`
 	Adult            bool     `json:"adult,omitempty"`
+	MediaType        string   `json:"media_type,omitempty"`
 }
 
-// CreatedBy is a creator of a TV show.
+// CreatedBy is a creator of a TV show. The created_by list is filled for only
+// a few shows, so TVDetails.CreatedBy is empty for most.
 type CreatedBy struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
@@ -159,8 +165,9 @@ type SeasonSummary struct {
 	VoteAverage  float64 `json:"vote_average,omitempty"`
 }
 
-// TVDetails is the answer of TV.Details. The sections that append_to_response
-// adds are decoded into the fields at the end.
+// TVDetails is the answer of TV.Details and TV.Latest. The sections that
+// append_to_response adds are decoded into the fields at the end. The API
+// sends no type field for a show.
 type TVDetails struct {
 	ID                  int              `json:"id"`
 	Name                string           `json:"name"`
@@ -169,7 +176,6 @@ type TVDetails struct {
 	Overview            string           `json:"overview,omitempty"`
 	Tagline             string           `json:"tagline,omitempty"`
 	Status              string           `json:"status,omitempty"`
-	Type                string           `json:"type,omitempty"`
 	Homepage            string           `json:"homepage,omitempty"`
 	FirstAirDate        string           `json:"first_air_date,omitempty"`
 	LastAirDate         string           `json:"last_air_date,omitempty"`
@@ -197,18 +203,22 @@ type TVDetails struct {
 	Credits             *Credits         `json:"credits,omitempty"`
 	Recommendations     *Paged[TVShow]   `json:"recommendations,omitempty"`
 	Similar             *Paged[TVShow]   `json:"similar,omitempty"`
-	AggregateCredits    Object           `json:"aggregate_credits,omitempty"`
+	Lists               *Paged[UserList] `json:"lists,omitempty"`
 	Images              Object           `json:"images,omitempty"`
 	Videos              Object           `json:"videos,omitempty"`
 	Keywords            Object           `json:"keywords,omitempty"`
-	ExternalIDs         Object           `json:"external_ids,omitempty"`
+	ExternalIDs         *ExternalIDs     `json:"external_ids,omitempty"`
 	ContentRatings      Object           `json:"content_ratings,omitempty"`
 	Reviews             Object           `json:"reviews,omitempty"`
+	Translations        Object           `json:"translations,omitempty"`
+	AlternativeTitles   Object           `json:"alternative_titles,omitempty"`
+	EpisodeGroups       Object           `json:"episode_groups,omitempty"`
 	WatchProviders      Object           `json:"watch/providers,omitempty"`
-	Moods               Object           `json:"moods,omitempty"`
-	Soundtracks         Object           `json:"soundtracks,omitempty"`
-	Ratings             Object           `json:"ratings,omitempty"`
-	Wikidata            Object           `json:"wikidata,omitempty"`
+	Moods               *Moods           `json:"moods,omitempty"`
+	Soundtracks         *Soundtracks     `json:"soundtracks,omitempty"`
+	Ratings             *Ratings         `json:"ratings,omitempty"`
+	Wikidata            *Wikidata        `json:"wikidata,omitempty"`
+	Showtimes           *Showtimes       `json:"showtimes,omitempty"`
 }
 
 // Season is the answer of TV.Season.
@@ -251,6 +261,7 @@ type Person struct {
 	Popularity         float64  `json:"popularity,omitempty"`
 	Adult              bool     `json:"adult,omitempty"`
 	KnownFor           []Object `json:"known_for,omitempty"`
+	MediaType          string   `json:"media_type,omitempty"`
 }
 
 // PersonDetails is the answer of People.Details.
@@ -325,13 +336,266 @@ type Configuration struct {
 	ChangeKeys []string            `json:"change_keys,omitempty"`
 }
 
-// FindResults is the answer of Client.Find.
+// FindResults is the answer of Client.Find. Every item has its MediaType set.
+// The API always sends empty TVEpisodeResults and TVSeasonResults lists.
 type FindResults struct {
 	MovieResults     []Movie   `json:"movie_results"`
 	PersonResults    []Person  `json:"person_results"`
 	TVResults        []TVShow  `json:"tv_results"`
 	TVEpisodeResults []Episode `json:"tv_episode_results"`
 	TVSeasonResults  []Object  `json:"tv_season_results"`
+}
+
+// UserList is a user made list that contains a title.
+type UserList struct {
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	Description   string `json:"description,omitempty"`
+	FavoriteCount int    `json:"favorite_count,omitempty"`
+	ItemCount     int    `json:"item_count,omitempty"`
+	ISO6391       string `json:"iso_639_1,omitempty"`
+	ISO31661      string `json:"iso_3166_1,omitempty"`
+	PosterPath    string `json:"poster_path,omitempty"`
+}
+
+// ExternalIDs holds the ids of a movie or TV show on other services. A movie
+// has no FreebaseMID, FreebaseID, TVDBID or TVRageID. KinopoiskID is a string
+// such as "361". Empty values mean the id is unknown. In append_to_response
+// the id field is missing.
+type ExternalIDs struct {
+	ID          int    `json:"id,omitempty"`
+	IMDbID      string `json:"imdb_id,omitempty"`
+	WikidataID  string `json:"wikidata_id,omitempty"`
+	FacebookID  string `json:"facebook_id,omitempty"`
+	InstagramID string `json:"instagram_id,omitempty"`
+	TwitterID   string `json:"twitter_id,omitempty"`
+	KinopoiskID string `json:"kinopoisk_id,omitempty"`
+	FreebaseMID string `json:"freebase_mid,omitempty"`
+	FreebaseID  string `json:"freebase_id,omitempty"`
+	TVDBID      int    `json:"tvdb_id,omitempty"`
+	TVRageID    int    `json:"tvrage_id,omitempty"`
+}
+
+// PersonExternalIDs holds the ids of a person on other services. Empty values
+// mean the id is unknown.
+type PersonExternalIDs struct {
+	ID          int    `json:"id"`
+	IMDbID      string `json:"imdb_id,omitempty"`
+	WikidataID  string `json:"wikidata_id,omitempty"`
+	FacebookID  string `json:"facebook_id,omitempty"`
+	InstagramID string `json:"instagram_id,omitempty"`
+	TikTokID    string `json:"tiktok_id,omitempty"`
+	TwitterID   string `json:"twitter_id,omitempty"`
+	YouTubeID   string `json:"youtube_id,omitempty"`
+}
+
+// MoodSource tells where the meters of a title come from.
+type MoodSource string
+
+// The mood sources. MoodSourceMeasured means the meters come from viewer data.
+// MoodSourceEstimated means they are derived from the genres. A title without
+// mood data has an empty source.
+const (
+	MoodSourceMeasured  MoodSource = "measured"
+	MoodSourceEstimated MoodSource = "estimated"
+)
+
+// MoodMeter is one mood of a title, for example "action" or "fear". Avg and
+// Values are on a 0 to 10 scale. Values holds up to 24 readings. Estimated
+// meters have whole numbers.
+type MoodMeter struct {
+	Name   string    `json:"name"`
+	Avg    float64   `json:"avg"`
+	Values []float64 `json:"values"`
+}
+
+// Moods is the answer of Movies.Moods and TV.Moods. A title without mood data
+// has an empty Source and no Results. In append_to_response the id field is
+// missing.
+type Moods struct {
+	ID      int         `json:"id,omitempty"`
+	Source  MoodSource  `json:"source,omitempty"`
+	Results []MoodMeter `json:"results"`
+}
+
+// Track is one track of a soundtrack album.
+type Track struct {
+	Disc       int    `json:"disc"`
+	Number     int    `json:"number"`
+	Title      string `json:"title"`
+	Artist     string `json:"artist,omitempty"`
+	DurationMS int    `json:"duration_ms"`
+}
+
+// SoundtrackAlbum is one album of Soundtracks. Source is "musicbrainz" or
+// "deezer". Artist, Released and URL are empty when unknown.
+type SoundtrackAlbum struct {
+	Source     string  `json:"source"`
+	Album      string  `json:"album"`
+	Artist     string  `json:"artist,omitempty"`
+	Released   string  `json:"released,omitempty"`
+	URL        string  `json:"url,omitempty"`
+	TrackCount int     `json:"track_count"`
+	Tracks     []Track `json:"tracks"`
+}
+
+// Soundtracks is the answer of Movies.Soundtracks and TV.Soundtracks. Results
+// is empty when no album is known. In append_to_response the id field is
+// missing.
+type Soundtracks struct {
+	ID      int               `json:"id,omitempty"`
+	Results []SoundtrackAlbum `json:"results"`
+}
+
+// Rating is the score of one provider. Votes is nil when the provider gives
+// no vote count.
+type Rating struct {
+	Value float64 `json:"value"`
+	Votes *int    `json:"votes"`
+}
+
+// Ratings is the answer of Movies.Ratings and TV.Ratings. A provider without
+// a score is nil. IMDb, Kinopoisk and TMDB are out of 10. Metacritic and
+// RottenTomatoes are out of 100. In append_to_response the id field is
+// missing.
+type Ratings struct {
+	ID             int     `json:"id,omitempty"`
+	IMDb           *Rating `json:"imdb"`
+	Kinopoisk      *Rating `json:"kinopoisk"`
+	Metacritic     *Rating `json:"metacritic"`
+	RottenTomatoes *Rating `json:"rotten_tomatoes"`
+	TMDB           *Rating `json:"tmdb"`
+}
+
+// WikidataMoney is an amount rounded to whole units. Currency is an ISO code
+// and is empty when unknown.
+type WikidataMoney struct {
+	Value    int64  `json:"value"`
+	Currency string `json:"currency,omitempty"`
+}
+
+// WikidataBoxOffice is the box office of a title. Worldwide is true when the
+// amount is the worldwide total.
+type WikidataBoxOffice struct {
+	Value     int64  `json:"value"`
+	Currency  string `json:"currency,omitempty"`
+	Worldwide bool   `json:"worldwide"`
+}
+
+// WikidataLink points to a Wikidata item. TMDBID and MediaType are set only
+// when the item is a title in the catalog. MediaType is "movie" or "tv".
+type WikidataLink struct {
+	WikidataID string `json:"wikidata_id"`
+	Label      string `json:"label,omitempty"`
+	TMDBID     int    `json:"tmdb_id,omitempty"`
+	MediaType  string `json:"media_type,omitempty"`
+}
+
+// WikidataEntry is a WikidataLink with the year of an award or nomination.
+type WikidataEntry struct {
+	WikidataLink
+	Year int `json:"year,omitempty"`
+}
+
+// WikidataRef is a Wikidata item with its label.
+type WikidataRef struct {
+	WikidataID string `json:"wikidata_id"`
+	Label      string `json:"label,omitempty"`
+}
+
+// WikidataSource is a work that a title is based on. Author is nil when it is
+// unknown.
+type WikidataSource struct {
+	WikidataID string       `json:"wikidata_id"`
+	Label      string       `json:"label,omitempty"`
+	Author     *WikidataRef `json:"author"`
+}
+
+// Wikidata is the answer of Movies.Wikidata and TV.Wikidata. Budget,
+// BoxOffice, Follows and FollowedBy are nil when unknown. Sitelinks maps a
+// language code to a Wikipedia page title. Labels use the request language and
+// fall back to English.
+type Wikidata struct {
+	ID                   int                `json:"id"`
+	WikidataID           string             `json:"wikidata_id,omitempty"`
+	Budget               *WikidataMoney     `json:"budget"`
+	BoxOffice            *WikidataBoxOffice `json:"box_office"`
+	Follows              *WikidataLink      `json:"follows"`
+	FollowedBy           *WikidataLink      `json:"followed_by"`
+	Sitelinks            map[string]string  `json:"sitelinks"`
+	Awards               []WikidataEntry    `json:"awards"`
+	Nominations          []WikidataEntry    `json:"nominations"`
+	BasedOn              []WikidataSource   `json:"based_on"`
+	FilmingLocations     []WikidataLink     `json:"filming_locations"`
+	NarrativeLocations   []WikidataLink     `json:"narrative_locations"`
+	OriginalBroadcasters []WikidataLink     `json:"original_broadcasters"`
+}
+
+// ShowtimeCountry counts the venues and showtimes of one country. It is part
+// of Showtimes.Countries.
+type ShowtimeCountry struct {
+	Country   string `json:"country"`
+	Name      string `json:"name"`
+	Venues    int    `json:"venues"`
+	Cities    int    `json:"cities"`
+	Showtimes int    `json:"showtimes"`
+	FirstDay  string `json:"first_day"`
+	LastDay   string `json:"last_day"`
+}
+
+// Showtime is one screening. Start and End are local times at the venue, for
+// example "2026-10-18T21:40". Price is nil when unknown.
+type Showtime struct {
+	Date       string   `json:"date"`
+	Start      string   `json:"start"`
+	End        string   `json:"end,omitempty"`
+	Auditorium string   `json:"auditorium,omitempty"`
+	Formats    []string `json:"formats"`
+	Tags       []string `json:"tags"`
+	Audio      string   `json:"audio,omitempty"`
+	Subtitles  string   `json:"subtitles,omitempty"`
+	Language   string   `json:"language,omitempty"`
+	Price      *float64 `json:"price"`
+	Currency   string   `json:"currency,omitempty"`
+	Prices     any      `json:"prices"`
+	BookingURL string   `json:"booking_url,omitempty"`
+	SoldOut    bool     `json:"sold_out"`
+}
+
+// VenueChain is the cinema chain of a venue.
+type VenueChain struct {
+	Key  string `json:"key"`
+	Name string `json:"name,omitempty"`
+}
+
+// Venue is a cinema with its showtimes for one title. Latitude and Longitude
+// are nil when unknown.
+type Venue struct {
+	ID         int        `json:"id"`
+	Name       string     `json:"name"`
+	Chain      VenueChain `json:"chain"`
+	City       string     `json:"city,omitempty"`
+	Region     string     `json:"region,omitempty"`
+	Address    string     `json:"address,omitempty"`
+	PostalCode string     `json:"postal_code,omitempty"`
+	Country    string     `json:"country"`
+	Timezone   string     `json:"timezone,omitempty"`
+	Latitude   *float64   `json:"latitude"`
+	Longitude  *float64   `json:"longitude"`
+	Phone      string     `json:"phone,omitempty"`
+	URL        string     `json:"url,omitempty"`
+	Showtimes  []Showtime `json:"showtimes"`
+}
+
+// Showtimes is the answer of Movies.Showtimes and TV.Showtimes. Without a
+// country, Results is empty and Countries holds the counts per country. With a
+// country, Country is set and Results lists the venues. Only days from today
+// on are listed.
+type Showtimes struct {
+	ID        int               `json:"id"`
+	Country   string            `json:"country,omitempty"`
+	Results   []Venue           `json:"results"`
+	Countries []ShowtimeCountry `json:"countries"`
 }
 
 // OMDbRating is one entry of the Ratings list of an OMDb title.

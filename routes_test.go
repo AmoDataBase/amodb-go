@@ -55,6 +55,9 @@ func TestRoutes(t *testing.T) {
 		{"Movies.AlternativeTitles", "/3/movie/550/alternative_titles", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.Movies.AlternativeTitles(ctx, 550, nil))
 		}},
+		{"Movies.Lists", "/3/movie/550/lists", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.Movies.Lists(ctx, 550, nil))
+		}},
 		{"Movies.Moods", "/3/movie/550/moods", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.Movies.Moods(ctx, 550, nil))
 		}},
@@ -70,6 +73,9 @@ func TestRoutes(t *testing.T) {
 		{"Movies.Showtimes", "/3/movie/550/showtimes", "country", "US", func(ctx context.Context, c *Client) error {
 			return errOf(c.Movies.Showtimes(ctx, 550, "US", nil))
 		}},
+		{"Movies.Showtimes without country", "/3/movie/550/showtimes", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.Movies.Showtimes(ctx, 550, "", nil))
+		}},
 		{"Movies.Popular", "/3/movie/popular", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.Movies.Popular(ctx, nil))
 		}},
@@ -82,11 +88,11 @@ func TestRoutes(t *testing.T) {
 		{"Movies.NowPlaying", "/3/movie/now_playing", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.Movies.NowPlaying(ctx, nil))
 		}},
+		{"Movies.Latest", "/3/movie/latest", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.Movies.Latest(ctx, nil))
+		}},
 		{"TV.Details", "/3/tv/1399", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.Details(ctx, 1399, nil))
-		}},
-		{"TV.AggregateCredits", "/3/tv/1399/aggregate_credits", "", "", func(ctx context.Context, c *Client) error {
-			return errOf(c.TV.AggregateCredits(ctx, 1399, nil))
 		}},
 		{"TV.Credits", "/3/tv/1399/credits", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.Credits(ctx, 1399, nil))
@@ -118,6 +124,18 @@ func TestRoutes(t *testing.T) {
 		{"TV.WatchProviders", "/3/tv/1399/watch/providers", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.WatchProviders(ctx, 1399, nil))
 		}},
+		{"TV.Translations", "/3/tv/1399/translations", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.TV.Translations(ctx, 1399, nil))
+		}},
+		{"TV.AlternativeTitles", "/3/tv/1399/alternative_titles", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.TV.AlternativeTitles(ctx, 1399, nil))
+		}},
+		{"TV.Lists", "/3/tv/1399/lists", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.TV.Lists(ctx, 1399, nil))
+		}},
+		{"TV.EpisodeGroups", "/3/tv/1399/episode_groups", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.TV.EpisodeGroups(ctx, 1399, nil))
+		}},
 		{"TV.Moods", "/3/tv/1399/moods", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.Moods(ctx, 1399, nil))
 		}},
@@ -129,6 +147,9 @@ func TestRoutes(t *testing.T) {
 		}},
 		{"TV.Wikidata", "/3/tv/1399/wikidata", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.Wikidata(ctx, 1399, nil))
+		}},
+		{"TV.Showtimes", "/3/tv/1399/showtimes", "country", "RU", func(ctx context.Context, c *Client) error {
+			return errOf(c.TV.Showtimes(ctx, 1399, "RU", nil))
 		}},
 		{"TV.Season", "/3/tv/1399/season/1", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.Season(ctx, 1399, 1, nil))
@@ -147,6 +168,9 @@ func TestRoutes(t *testing.T) {
 		}},
 		{"TV.OnTheAir", "/3/tv/on_the_air", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.TV.OnTheAir(ctx, nil))
+		}},
+		{"TV.Latest", "/3/tv/latest", "", "", func(ctx context.Context, c *Client) error {
+			return errOf(c.TV.Latest(ctx, nil))
 		}},
 		{"People.Details", "/3/person/287", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.People.Details(ctx, 287, nil))
@@ -234,6 +258,9 @@ func TestRoutes(t *testing.T) {
 		}},
 		{"Find", "/3/find/tt0137523", "external_source", "imdb_id", func(ctx context.Context, c *Client) error {
 			return errOf(c.Find(ctx, "tt0137523", "imdb_id"))
+		}},
+		{"Find with Kinopoisk id", "/3/find/361", "external_source", "kinopoisk_id", func(ctx context.Context, c *Client) error {
+			return errOf(c.Find(ctx, "361", "kinopoisk_id"))
 		}},
 		{"Configuration", "/3/configuration", "", "", func(ctx context.Context, c *Client) error {
 			return errOf(c.Configuration(ctx))

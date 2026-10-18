@@ -83,6 +83,15 @@ func withParam(params Params, key string, value any) Params {
 	return out
 }
 
+// withCountry returns params with the country set. An empty country sends no
+// country parameter, and params is returned as it is.
+func withCountry(params Params, country string) Params {
+	if country == "" {
+		return params
+	}
+	return withParam(params, "country", country)
+}
+
 func apiPath(path string) string {
 	if path == "" || path[0] != '/' {
 		return "/" + path

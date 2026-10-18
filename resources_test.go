@@ -56,9 +56,15 @@ func TestMovieDetailsDecoding(t *testing.T) {
 	if movie.Images == nil || movie.Images["posters"] == nil {
 		t.Errorf("images = %v", movie.Images)
 	}
-	ratings, ok := movie.Ratings["imdb"].(map[string]any)
-	if !ok || ratings["value"] != 8.8 {
-		t.Errorf("ratings = %v", movie.Ratings)
+	if movie.Ratings == nil || movie.Ratings.IMDb == nil {
+		t.Fatalf("ratings = %+v", movie.Ratings)
+	}
+	imdb := movie.Ratings.IMDb
+	if imdb.Value != 8.8 || imdb.Votes == nil || *imdb.Votes != 2300000 {
+		t.Errorf("imdb = %+v", imdb)
+	}
+	if movie.Ratings.Kinopoisk != nil || movie.Ratings.TMDB != nil {
+		t.Errorf("ratings = %+v, the missing providers must be nil", movie.Ratings)
 	}
 }
 
@@ -257,24 +263,6 @@ func TestTrendingReturnsObjects(t *testing.T) {
 	}
 	if len(res.Results) != 2 || res.Results[1]["media_type"] != "tv" {
 		t.Errorf("results = %+v", res.Results)
-	}
-}
-
-func TestShowtimesSendsTheCountry(t *testing.T) {
-	c, rec := newTestClient(t, jsonHandler(200, `{"showtimes":[]}`))
-	obj, err := c.Movies.Showtimes(context.Background(), 550, "US", Params{"language": "en-US"})
-	if err != nil {
-		t.Fatalf("Showtimes: %v", err)
-	}
-	got := rec.last(t)
-	if got.Path != "/3/movie/550/showtimes" {
-		t.Errorf("path = %q", got.Path)
-	}
-	if got.Query.Get("country") != "US" || got.Query.Get("language") != "en-US" {
-		t.Errorf("query = %v", got.Query)
-	}
-	if _, ok := obj["showtimes"]; !ok {
-		t.Errorf("object = %v", obj)
 	}
 }
 

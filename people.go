@@ -3,6 +3,9 @@ package amodb
 import "context"
 
 // PeopleService groups the person endpoints. Use it as client.People.
+//
+// The sections that append_to_response accepts on Details are
+// combined_credits, movie_credits, tv_credits, external_ids and images.
 type PeopleService service
 
 // Details returns /person/{id}.
@@ -25,14 +28,14 @@ func (s *PeopleService) TVCredits(ctx context.Context, id int, params Params) (O
 	return getObject(ctx, s.client, buildPath("person", id, "tv_credits"), params)
 }
 
-// Images returns profile images.
+// Images returns profile images. Only the profiles list is filled.
 func (s *PeopleService) Images(ctx context.Context, id int, params Params) (Object, error) {
 	return getObject(ctx, s.client, buildPath("person", id, "images"), params)
 }
 
 // ExternalIDs returns the ids of the person on other services.
-func (s *PeopleService) ExternalIDs(ctx context.Context, id int, params Params) (Object, error) {
-	return getObject(ctx, s.client, buildPath("person", id, "external_ids"), params)
+func (s *PeopleService) ExternalIDs(ctx context.Context, id int, params Params) (*PersonExternalIDs, error) {
+	return get[PersonExternalIDs](ctx, s.client, buildPath("person", id, "external_ids"), params)
 }
 
 // Popular returns popular people.

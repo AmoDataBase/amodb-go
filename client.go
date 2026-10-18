@@ -216,8 +216,12 @@ func NewClient(apiKey string, opts ...Option) (*Client, error) {
 }
 
 // Find looks up a title or person by an external id. externalSource is the
-// external_source value of the API, for example imdb_id. The API reference
-// lists the other accepted values.
+// external_source value of the API. These sources return results: imdb_id (tt
+// ids for titles, nm ids for people), tvdb_id, facebook_id, twitter_id,
+// instagram_id, wikidata_id (Q ids) and kinopoisk_id. The sources
+// freebase_mid, freebase_id, tvrage_id, tiktok_id and youtube_id are accepted
+// and return empty lists. A missing or unknown source returns an HTTP 400
+// error.
 func (c *Client) Find(ctx context.Context, externalID, externalSource string) (*FindResults, error) {
 	params := Params{"external_source": externalSource}
 	return get[FindResults](ctx, c, buildPath("find", externalID), params)

@@ -4,8 +4,10 @@ import "context"
 
 // SearchService groups the search endpoints. Use it as client.Search.
 //
-// Each method takes the search text first. Pass "page", "year", "language" or
-// any other documented parameter in Params.
+// Each method takes the search text first. Pass "page", "year",
+// "first_air_date_year", "language" or any other documented parameter in
+// Params. The include_adult parameter is ignored, because adult titles and
+// people are never served.
 type SearchService service
 
 // Movie searches movies.
