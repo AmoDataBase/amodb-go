@@ -1,0 +1,6 @@
+{
+  "name": "amodb-go",
+  "description": "Go client for the amodb movie and TV metadata API. TMDB v3 and OMDb compatible, standard library only.",
+  "homepage": "https://amodb.dev",
+  "topics": ["amodb", "tmdb", "omdb", "go", "golang", "movie-api", "tv-api", "api-client", "sdk"]
+}

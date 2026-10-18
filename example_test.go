@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/netlistenany-bot/amodb-go"
+	"github.com/amodb-dev/amodb-go"
 )
 
 func ExampleNewClient() {

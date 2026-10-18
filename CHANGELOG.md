@@ -17,6 +17,9 @@ Align extension types with the live API.
 - `Movie`, `TVShow` and `Person` have a `MediaType` field, which find results fill.
 - `Client.Find` documents the full list of external sources, including `kinopoisk_id` and `wikidata_id`.
 - The README lists the valid append_to_response names and the calls that are not offered.
+- Add CI, release and Dependabot workflows.
+- The module path is now `github.com/amodb-dev/amodb-go`.
+- The minimum Go version is now 1.22, matching the versions tested in CI.
 
 ### Added
 

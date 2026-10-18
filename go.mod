@@ -1,3 +1,3 @@
-module github.com/netlistenany-bot/amodb-go
+module github.com/amodb-dev/amodb-go
 
-go 1.21
+go 1.22

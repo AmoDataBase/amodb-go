@@ -1,0 +1,27 @@
+# Go modules are published by the tag itself. Pushing v0.2.0 is the release:
+# the module proxy serves it on the first go get. This workflow runs the checks
+# on the tagged commit and creates the GitHub release.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: false
+      - run: go vet ./...
+      - run: go test -race ./...
+      - name: Create the GitHub release
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

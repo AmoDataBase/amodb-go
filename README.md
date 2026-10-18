@@ -1,8 +1,20 @@
-<!-- GitHub topics: amodb, tmdb, omdb, go, golang, movie-api, tv-api, api-client, sdk -->
+<p align="center">
+  <a href="https://amodb.dev">
+    <img src="https://raw.githubusercontent.com/amodb-dev/.github/main/assets/lockup.png" alt="amodb" width="260">
+  </a>
+</p>
 
-# amodb-go
+<h1 align="center">amodb-go</h1>
 
-Go client for the amodb movie and TV metadata API. It is compatible with TMDB v3 and OMDb, uses only the standard library and targets Go 1.21.
+<p align="center">Go client for the amodb movie and TV metadata API. Standard library only.</p>
+
+<p align="center">
+  <a href="https://github.com/amodb-dev/amodb-go/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/amodb-dev/amodb-go/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://pkg.go.dev/github.com/amodb-dev/amodb-go"><img alt="Latest tag" src="https://img.shields.io/github/v/tag/amodb-dev/amodb-go?sort=semver&label=version"></a>
+  <a href="https://github.com/amodb-dev/amodb-go/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/amodb-dev/amodb-go"></a>
+</p>
+
+Go client for the amodb movie and TV metadata API. It is compatible with TMDB v3 and OMDb, uses only the standard library and needs Go 1.22 or newer.
 
 amodb is a paid API. Get a key at https://amodb.dev/pricing.
 
@@ -11,7 +23,7 @@ Existing TMDB clients work by changing the base URL to `https://api.amodb.dev/3`
 ## Install
 
 ```sh
-go get github.com/netlistenany-bot/amodb-go
+go get github.com/amodb-dev/amodb-go
 ```
 
 The import path ends in `amodb-go`, the package name is `amodb`.
@@ -27,7 +39,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/netlistenany-bot/amodb-go"
+	"github.com/amodb-dev/amodb-go"
 )
 
 func main() {
@@ -309,7 +321,18 @@ go vet ./...
 go test ./...
 ```
 
-Tests use `net/http/httptest` servers and never call the live API. They need Go 1.21 or newer.
+Tests use `net/http/httptest` servers and never call the live API. They run on Go 1.22 and 1.23 in CI.
+
+## Links
+
+- Website: https://amodb.dev
+- Docs: https://amodb.dev/docs
+- Pricing: https://amodb.dev/pricing
+- Status: https://amodb.dev/status
+- Issues: https://github.com/amodb-dev/amodb-go/issues
+- Changelog: https://github.com/amodb-dev/amodb-go/blob/main/CHANGELOG.md
+- Security: https://github.com/amodb-dev/amodb-go/blob/main/SECURITY.md
+- Organization: https://github.com/amodb-dev
 
 ## License
 

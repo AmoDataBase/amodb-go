@@ -9,7 +9,7 @@ Thanks for helping. Keep changes small and focused.
 ```sh
 gofmt -l .
 go vet ./...
-go test ./...
+go test -race ./...
 ```
 
 4. Add or update tests for the behavior you change.
@@ -18,5 +18,15 @@ go test ./...
 Text in docs and comments: short, concrete sentences, sentence case headings, no long dashes.
 
 Never commit API keys. Use environment variables and `.env` files that are ignored by git.
+
+## Releasing
+
+For maintainers.
+
+1. Update `CHANGELOG.md`.
+2. Commit, then tag the commit and push the tag: `git tag v0.2.0 && git push origin v0.2.0`.
+3. The Release workflow runs vet and the race tests on the tagged commit and creates the GitHub release.
+
+A Go module is published by its tag alone. There is no registry upload: the module proxy serves the tag on the first `go get`.
 
 By contributing you agree that your work is released under the MIT license of this repository.
