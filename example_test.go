@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/amodb-dev/amodb-go"
+	"github.com/AmoDataBase/amodb-go"
 )
 
 func ExampleNewClient() {

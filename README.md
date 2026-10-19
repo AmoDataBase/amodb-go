@@ -1,8 +1,8 @@
 <p align="center">
   <a href="https://amodb.dev">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/amodb-dev/.github/main/assets/lockup-dark.png">
-      <img src="https://raw.githubusercontent.com/amodb-dev/.github/main/assets/lockup-light.png" alt="amodb" width="260">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AmoDataBase/.github/main/assets/lockup-dark.png">
+      <img src="https://raw.githubusercontent.com/AmoDataBase/.github/main/assets/lockup-light.png" alt="amodb" width="260">
     </picture>
   </a>
 </p>
@@ -12,9 +12,9 @@
 <p align="center">Go client for the amodb movie and TV metadata API. Standard library only.</p>
 
 <p align="center">
-  <a href="https://github.com/amodb-dev/amodb-go/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/amodb-dev/amodb-go/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://pkg.go.dev/github.com/amodb-dev/amodb-go"><img alt="Latest tag" src="https://img.shields.io/github/v/tag/amodb-dev/amodb-go?sort=semver&label=version"></a>
-  <a href="https://github.com/amodb-dev/amodb-go/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/amodb-dev/amodb-go"></a>
+  <a href="https://github.com/AmoDataBase/amodb-go/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/AmoDataBase/amodb-go/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://pkg.go.dev/github.com/AmoDataBase/amodb-go"><img alt="Latest tag" src="https://img.shields.io/github/v/tag/AmoDataBase/amodb-go?sort=semver&label=version"></a>
+  <a href="https://github.com/AmoDataBase/amodb-go/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/AmoDataBase/amodb-go"></a>
 </p>
 
 Go client for the amodb movie and TV metadata API. It is compatible with TMDB v3 and OMDb, uses only the standard library and needs Go 1.22 or newer.
@@ -26,7 +26,7 @@ Existing TMDB clients work by changing the base URL to `https://api.amodb.dev/3`
 ## Install
 
 ```sh
-go get github.com/amodb-dev/amodb-go
+go get github.com/AmoDataBase/amodb-go
 ```
 
 The import path ends in `amodb-go`, the package name is `amodb`.
@@ -42,7 +42,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/amodb-dev/amodb-go"
+	"github.com/AmoDataBase/amodb-go"
 )
 
 func main() {
@@ -332,10 +332,10 @@ Tests use `net/http/httptest` servers and never call the live API. They run on G
 - Docs: https://amodb.dev/docs
 - Pricing: https://amodb.dev/pricing
 - Status: https://amodb.dev/status
-- Issues: https://github.com/amodb-dev/amodb-go/issues
-- Changelog: https://github.com/amodb-dev/amodb-go/blob/main/CHANGELOG.md
-- Security: https://github.com/amodb-dev/amodb-go/blob/main/SECURITY.md
-- Organization: https://github.com/amodb-dev
+- Issues: https://github.com/AmoDataBase/amodb-go/issues
+- Changelog: https://github.com/AmoDataBase/amodb-go/blob/main/CHANGELOG.md
+- Security: https://github.com/AmoDataBase/amodb-go/blob/main/SECURITY.md
+- Organization: https://github.com/AmoDataBase
 
 ## License
 
